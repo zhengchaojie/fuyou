@@ -1,3 +1,4 @@
+<script src="../../common/util.js"></script>
 <template>
 	<div id="app" v-loading.fullscreen.lock="fullscreenLoading">
 		<div style="height:71px; background-color:white;width:100%;position: relative;" class="nav-date">
@@ -33,30 +34,30 @@
       </div>
     </template>
 			<el-dialog
-			title="按条件查询"
-			:visible.sync="dialogVisible"
+					title="按条件查询"
+					:visible.sync="dialogVisible"
 			>
-			<div>
-				<div class="tipDate">开始时间</div>
-				<el-date-picker
-				v-model="value1"
-				type="date"
-				placeholder="选择日期">
-			</el-date-picker>
-		</div>
-		<div>
-			<div class="tipDate">结束时间</div>
-			<el-date-picker
-			v-model="value2"
-			type="date"
-			placeholder="选择日期">
-		</el-date-picker>
-	</div>
-	<span slot="footer" class="dialog-footer">
+				<div>
+					<div class="tipDate">开始时间</div>
+					<el-date-picker
+							v-model="value1"
+							type="date"
+							placeholder="选择日期">
+					</el-date-picker>
+				</div>
+				<div>
+					<div class="tipDate">结束时间</div>
+					<el-date-picker
+							v-model="value2"
+							type="date"
+							placeholder="选择日期">
+					</el-date-picker>
+				</div>
+				<span slot="footer" class="dialog-footer">
 		<el-button type="primary" @click="dialogVisible = false;termSearch(value1,value2)">确 定</el-button>
 		<el-button @click="dialogVisible = false">取 消</el-button>
 	</span>
-</el-dialog>
+			</el-dialog>
 </div>
 <!--右边侧栏 -->
 <div class="contain">
@@ -70,12 +71,12 @@
 			<li>交易完成时间</li>
 		</ul>
 		<ul class="listhead font_color" v-for="item in data3">
-			<li>{{item.badyname}}</li>
+			<li>{{item.medicalName}}</li>
 			<li>{{item.tradeNo}}</li>
 			<li>66</li>
 			<li>入园体检缴费</li>
-			<li>{{item.buyerLogonId}}</li>
-			<li>{{item.peTime}}</li>
+			<li>{{item.zfbAccount}}</li>
+			<li>{{item.payTime}}</li>
 		</ul>
 	</div>
 	<div class="all">
@@ -99,7 +100,7 @@
 </div>
 </template>
 <script>
-import {searchData,familyDoctor,getLastDate,checkStatus} from "./../../common/util.js"
+import {searchData,fyurl,getLastDate,checkStatus} from "./../../common/util.js"
 import blurseach from "./../../common/blurseach.vue"
 import axios from "axios"
 import bus from '../../bus'
@@ -142,7 +143,7 @@ export  default{
       checkStatus(_this)
       let begindate = getLastDate(_this.value3);
       let enddate = getLastDate(_this.value4);
-      let url=familyDoctor() +_this.exportApi.api;
+      let url=fyurl() +_this.exportApi.api;
       if(_this.value3 != "" && _this.value4 != ""){
         _this.fullscreenLoading = true;
            setTimeout(() => {
@@ -179,20 +180,20 @@ export  default{
 		requestData:function(){
 			let _this=this
 			checkStatus(_this)
-			let url=familyDoctor()
-			axios.post(url + "/wcfy/account/findAccount?loginId="+_this.loginId+"&token="+_this.token,{
+			let url=fyurl()
+			axios.post(url + "/wcfy/sys/account/accountList?loginId="+_this.loginId+"&token="+_this.token,{
 				is_express:0,
 				pageNum:1,
 				pageSize:5
 			}).then(response=>{
-				_this.data3=response.data.data.list
-				_this.total=response.data.data.total
-				_this.totalAmount=response.data.data.total*66
+				_this.data3=response.data.list.records
+				_this.total=response.data.list.total
+				_this.totalAmount=response.data.list.total*66
 			})
 		},
 		// 搜索
 		termSearch:function(){
-			let url = familyDoctor();
+			let url = fyurl();
 			let _this = this;
 			checkStatus(_this)
 			_this.startTime = getLastDate(arguments[0])
@@ -202,7 +203,7 @@ export  default{
 				this.$message("请选择查询条件")
 				return
 			}
-			axios.post(url+"/wcfy/account/findAccount?loginId="+_this.loginId+"&token="+_this.token,
+			axios.post(url+"/wcfy/sys/account/accountList?loginId="+_this.loginId+"&token="+_this.token,
 			{
 				is_express:0,
 				pageSize:5,
@@ -210,19 +211,18 @@ export  default{
 				beginDate:_this.startTime,
 				endDate:_this.endTime,
 			}).then(function(response) {
-				console.log(response)
-				_this.data3 = response.data.data.list;
-				_this.total = response.data.data.total;
-				_this.totalAmount=response.data.data.total*66
+				_this.data3=response.data.list.records
+				_this.total=response.data.list.total
+				_this.totalAmount=response.data.list.total*66
 			});
 		},
 		// 分页
 		handleCurrentChange:function(val){
-			let url = familyDoctor();
+			let url = fyurl();
 			let _this = this;
 			checkStatus(_this)
 			if(_this.radio!=""||_this.value2!=""||_this.value1!=""){
-				axios.post(url+"/wcfy/account/findAccount?loginId="+_this.loginId+"&token="+_this.token,
+				axios.post(url+"/wcfy/sys/account/accountList?loginId="+_this.loginId+"&token="+_this.token,
 				{
 					is_express:0,
 					pageSize:5,
@@ -231,24 +231,24 @@ export  default{
 					endDate:_this.endTime,
 					tranckStatus:_this.radio
 				}).then(function(response) {
-					_this.data3 = response.data.data.list;
-					_this.total = response.data.data.total;
+					_this.data3=response.data.list.records
+					_this.total=response.data.list.total
 				});
 			} else{
-				axios.post(url+"/wcfy/account/findAccount?loginId="+_this.loginId+"&token="+_this.token,
+				axios.post(url+"/wcfy/sys/account/accountList?loginId="+_this.loginId+"&token="+_this.token,
 				{
 					is_express:0,
 					pageSize:5,
 					pageNum:val
 				}).then(function(response) {
-					_this.data3 = response.data.data.list;
-					_this.total = response.data.data.total;
+					_this.data3=response.data.list.records
+					_this.total=response.data.list.total
 				});
 			}
 		}
 	},
 	computed: {
-		familyDoctor,
+		fyurl,
 		checkStatus
 	},
 	components:{

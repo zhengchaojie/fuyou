@@ -56,12 +56,14 @@ export default {
        account: this.username,
        pwd: this.pwd
      }).then(function(response){
+       console.log(response);
       let msg=response.data.message
       if(msg){
         _this.$message(msg)
         return
       }
-      let num=response.data.data.roleId
+      let num=response.data.data.roleId;
+
       let date1 = new Date()
       let dateLogin=date1.getTime()
        window.sessionStorage.setItem("dateLogin",dateLogin);
@@ -73,8 +75,15 @@ export default {
       window.localStorage.setItem("loginId",response.data.data.id);
       window.localStorage.setItem("id",response.data.data.roleId);
       window.localStorage.setItem("user_name",response.data.data.name);
+      //权限为6
+      if(num == 6 ){
+        window.localStorage.setItem("schoolid",response.data.data.shcoolId);//学校账号
+        window.localStorage.setItem("schoolname",response.data.data.account);//学校名称
+      }
+
+
       let roleId = response.data.data.roleId;
-      _this.b=response.data.roleId  
+      _this.b=response.data.roleId
       switch(num){
        case 1:
        _this.$router.push("sign/list1/")
@@ -88,8 +97,11 @@ export default {
        case 5:
        _this.$router.push("sign/list1/")
        break;
-     } 
-   })             
+       case 6:
+         _this.$router.push("child/classes/")
+              break;
+     }
+   })
    }
  },
  computed: {
@@ -97,7 +109,7 @@ export default {
 }
 };
 </script>
-<style >
+<style scoped>
 body,
 html {
   width: 100%;
@@ -165,7 +177,7 @@ html {
   margin-top: -129px;
   right: 200px;
   background-color: rgba(255, 255, 255, 0.76);
-  padding:65px 45px 0;
+  padding:45px 45px 0;
   text-align: center;
   box-sizing: border-box;
 }

@@ -2,11 +2,11 @@
 	<div id="app" v-loading.fullscreen.lock="fullscreenLoading">
 		<div style="height:81px; background-color:white;width:100%;position: relative;" class="nav-date">   
 			<el-button type="text" @click="dialogVisible = true" class="searchDate">条件搜索</el-button>
-      <el-dialog
-      title="按条件查询"
-      :visible.sync="dialogVisible"
-     >
-      <div>
+         <el-dialog
+        title="按条件查询"
+        :visible.sync="dialogVisible"
+        >
+         <div>
         <div class="tipDate">开始时间</div>
         <el-date-picker
         v-model="value1"
@@ -194,6 +194,12 @@ export default {
   margin-left: 20px;
   background-color: #fb8ca6;
 }
+.nav-date>>>.el-button{
+    float: left;
+}
+.nav-date{
+    display: flex;
+}
 .listhead{
   width: 100%;
   height: 70px;
@@ -229,6 +235,8 @@ export default {
   margin:30px 0 10px 0;
   text-align: center;
   font-size: 15px;
+    display: flex;
+    justify-content: center;
 }
 .total span{
   margin: 0 20px;
@@ -244,8 +252,9 @@ export default {
   width:100%;
   float: left;
   line-height: 30px;
-  margin-top: 10px;
   text-align: center;
+  justify-content: center;
+   font-size:.2rem;
 }
 .all span {
   display: inline-block;

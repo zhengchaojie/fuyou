@@ -198,7 +198,7 @@ html {
   float: left;
   display: block;
   margin-bottom: 5px;
-  color: #ccc!important
+  color: #fb8ca6!important
 }
 .el-dialog__headerbtn{
   display: none;
@@ -263,7 +263,6 @@ html {
   border-radius: 50%;
 }
 .info_name{
-  display: inline-block;
   font-size: 16px;
   margin-right: 35px;
 }
@@ -317,6 +316,7 @@ html {
   text-align: center;
   margin-top: 10px;
   color: #b7b7b7;
+  font-size: 0.4rem;
 }
 .search-icon img{
   position: absolute;
@@ -328,12 +328,14 @@ html {
 }
 /*条件查询*/
 
-.el-dialog--small{
-  height: 330px !important;
-  width: 270px !important;
-}
+  .el-dialog--small{
+    height: 330px !important;
+    width: 270px !important;
+  }
+
 .el-dialog__body{
   padding: 10px 20px!important;
+  background-color: #fff!important;
 }
 .el-dialog__footer{
   text-align: center!important;
@@ -378,6 +380,87 @@ html {
 .el-submenu__title:hover {
       background-color: #fb8ca6!important;
     }
+/*早教*/
+#app > div > div.page_content > div > section > div > div > div > div > div.zj_detail > div > div{
+  width:850px!important;
+  height: auto!important;
+}
+#app > div > div.page_content > div > section > div > div > div > div > div.zj_detail > div > div > div.el-dialog__header{
+  width: 790px;
+  margin: auto;
+  padding:0px 0px!important;
+  height: 40px;
+  display: flex;
+  align-items:center;
+}
+#app > div > div.page_content > div > section > div > div > div > div > div.zj_detail > div > div > div.el-dialog__body{
+  padding: 0!important;
+  width: 765px;
+  margin: auto;
+}
+
+
+
+  /*课程核销*/
+#app > div > div.page_content > div > section > div > div > div > div.hx_card > div > div{
+  width: 650px!important;
+}
+#app > div > div.page_content > div > section > div > div > div > div.hx_card > div > div > div.el-dialog__header{
+  width: 590px;
+  padding: 15px 0!important ;
+  display: flex;
+  align-items: center;
+}
+#app > div > div.page_content > div > section > div > div > div > div.hx_card > div > div > div.el-dialog__body{
+  margin: auto;
+  background-color: white;
+}
+.el-dialog__footer{
+  background-color: #fff!important;
+}
+.el-dialog__title{
+  margin-bottom: 0!important;
+}
+/*早教预约管理*/
+#app > div > div.page_content > div > section > div > div > div > div.xf_search > div > div{
+  height: 250px!important;
+}
+#app > div > div.page_content > div > section > div > div > div > div.xf_search > div > div > div.el-dialog__body{
+  padding-top: 20px!important;
+  padding-bottom: 10px!important;
+}
+/*新增人数*/
+#app > div > div.page_content > div > section > div > div > div > div.new_class > div > div{
+  height: 260px!important;
+}
+#app > div > div.page_content > div > section > div > div > div > div.new_class > div > div > div.el-dialog__body > div{
+  display: flex;
+  padding: 30px 0 0;
+  align-items: center;
+}
+/*新增学生*/
+#app > div > div.page_content > div > section > div > div > div > div > div.zj_add > div > div {
+  width: 320px!important;
+
+}
+/*#app > div > div.page_content > div > section > div > div > div > div > div.zj_add > div > div > div.el-dialog__body > div > div > div > div.el-input > input*/
+#app > div > div.page_content > div > section > div > div > div > div > div.zj_add > div > div > div.el-dialog__body > div > div > div > div.el-input > input{
+  width: 180px!important;
+}
+
+  /*核销日期搜索*/
+#app > div > div.page_content > div > section > div > div > div > div.head_navs > div.search_date > div:nth-child(1),
+#app > div > div.page_content > div > section > div > div > div > div.head_navs > div.search_date > div:nth-child(3){
+  width: 130px;
+}
+#app > div > div.page_content > div > section > div > div > div > div.head_navs > div.search_date > div:nth-child(1) > input,
+#app > div > div.page_content > div > section > div > div > div > div.head_navs > div.search_date > div:nth-child(3) > input{
+  width: 130px!important;
+}
+#app > div > div.page_content > div > section > div > div > div > div.head_navs > div.search_date > div:nth-child(1) > i,
+#app > div > div.page_content > div > section > div > div > div > div.head_navs > div.search_date > div:nth-child(3) > i{
+  right: 10px;
+}
 </style>
 <style scoped lang="scss">
 .container {

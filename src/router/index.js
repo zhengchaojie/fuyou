@@ -6,6 +6,10 @@ import login from '@/components/Login'
 //签约管理
 import list1 from '@/components/sign/list1'
 import list from '@/components/sign/list'
+//在园体检
+import school from '@/components/child/school'
+import classes from '@/components/child/classes'
+import returns from '@/components/child/returns'
 //计免疫苗
 import vlist1 from '@/components/vaccine/list1'
 import vlist2 from '@/components/vaccine/list2'
@@ -27,6 +31,14 @@ import setting from '@/components/Set/setting'
 // 数据统计
 import total from '@/components/count/total'
 import details from '@/components/count/details'
+
+//儿童早教
+import education1 from '@/components/education/list1'
+import education2 from '@/components/education/list2'
+import education3 from '@/components/education/list3'
+import education4 from '@/components/education/list4'
+import education5 from '@/components/education/list5'
+import education6 from '@/components/education/list6'
 //懒加载方式，当路由被访问的时候才加载对应组件
 const Login = resolve => require(['@/components/Login'], resolve)
 //图片加载
@@ -41,7 +53,12 @@ import demo8 from '../assets/images/title6.png'
 import demo9 from '../assets/images/13.png'
 import demo10 from '../assets/images/tf.png'
 import demo11 from '../assets/images/total.png'
+import demo12 from "../assets/images/flower.png"
+
+
+import demo13 from '../assets/images/zj.png'
 Vue.use(Router)
+
 
 let router = new Router({
     routes: [
@@ -56,17 +73,45 @@ let router = new Router({
             component: Home,
             name: '入园体检',
             iconCls: demo1,
-            menuShow: "1345",
+            menuShow: "13456",
             children: [
                 { path: '/sign/list1/', component: list1, name: '预约', menuShow: "135" },
                 { path: '/sign/list/', component: list, name: '已完成', menuShow: "135" }
             ]
         },
+      {
+        path: '/',
+        component: Home,
+        name: '在园体检',
+        iconCls: demo12,
+        menuShow: "13456",
+        children: [
+          { path: '/child/school/', component: school, name: '学校列表', menuShow: "135" },
+          { path: '/child/classes/', component: classes, name: '班级详情', menuShow: "6" },
+          { path: '/child/returns/', component: returns, name: '体检退费', menuShow: "1356" },
+        ]
+      },
+        {
+            path: '/',
+            component: Home,
+            name: '儿童早教',
+            iconCls: demo13,
+            menuShow: "13456",
+            children: [
+                { path: '/eduction/list1/', component: education1, name:'班级管理', menuShow: "1356" },
+                { path: '/eduction/list2/', component: education2, name:'学生管理', menuShow: "1356" },
+                { path: '/eduction/list3/', component: education3, name:'预约管理', menuShow: "1356" },
+                { path: '/eduction/list4/', component: education4, name:'课程核销', menuShow: "1356" },
+                { path: '/eduction/list6/', component: education6, name:'续费管理', menuShow: "1356" },
+                { path: '/eduction/list5/', component: education5, name:'早教班级详情', menuShow: "" },
+            ]
+        },
+
         {
             path: '/',
             component: Home,
             name: '先心筛查',
-            menuShow: "1345",
+            menuShow: "13456",
             iconCls: demo2,
             children: [
                 { path: '/vaccine/list1/', component: vlist1, name: '预约', menuShow: "135" },
@@ -78,7 +123,7 @@ let router = new Router({
             path: '/',
             component: Home,
             name: '唐氏筛查',
-            menuShow: "1345",
+            menuShow: "13456",
             iconCls: demo3,
             children: [
                 { path: '/oldman/list1/', component: olist1, name: '预约', menuShow: "135" },
@@ -91,7 +136,7 @@ let router = new Router({
             path: '/',
             component: Home,
             name: '服务设置',
-            menuShow: "1345",
+            menuShow: "13456",
             iconCls: demo8,
             children: [
                 { path: '/Set/setting/', component: setting, name: '设置管理', menuShow: "13" }
@@ -101,7 +146,7 @@ let router = new Router({
             path: '/',
             component: Home,
             name: '寄送管理',
-            menuShow: "1345",
+            menuShow: "13456",
             iconCls: demo5,
             children: [
                 { path: '/hospital/introduce/', component: introduce, name: '寄送服务', menuShow: "1345" },
@@ -111,7 +156,7 @@ let router = new Router({
             path: '/',
             component: Home,
             name: '数据统计',
-            menuShow: "1345",
+            menuShow: "13456",
             iconCls: demo6,
             children: [
                 { path: '/TotalData/TotalData', component: TotalData, name: '数据详情', menuShow: "1345" }
@@ -122,7 +167,7 @@ let router = new Router({
             component: Home,
             name: '对账管理',
             iconCls: demo10,
-            menuShow: "1345",
+            menuShow: "13456",
             children: [
                 { path: '/finance/list/', component: flist, name: '体检费', menuShow: "134" },
                 { path: '/finance/list2/', component: flist2, name: '快递费', menuShow: "3" }
@@ -132,7 +177,7 @@ let router = new Router({
             path: '/',
             component: Home,
             name: '更多功能',
-            menuShow: "1345",
+            menuShow: "13456",
             iconCls: demo9,
         }
     ]

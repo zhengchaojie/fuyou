@@ -287,25 +287,25 @@ export default {
      //确定
     SureData: function(item, index) {
       let _this = this;
-       checkStatus(_this)
+      checkStatus(_this)
       let url = familyDoctor();
       this.$confirm("体检人预约申请通过, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-          axios.post(_this.url+"/wcfy/Reservation/updateNiptStatus" + "?loginId="+_this.loginId+"&token="+_this.token,{
-            id:item.id,
-            orderStatus:2,
-            phone:item.physicalPhone
-          }).then(response => {
-               this.$message({
-                message:response.data.message,
-                type: 'success'
-              });
-              this.request();
-            });
-        }).catch(() => {
+        axios.post(_this.url+"/wcfy/Reservation/updateNiptStatus" + "?loginId="+_this.loginId+"&token="+_this.token,{
+          id:item.id,
+          orderStatus:2,
+          phone:item.physicalPhone
+        }).then(response => {
+          this.$message({
+            message:response.data.message,
+            type: 'success'
+          });
+          this.request();
+        });
+      }).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消'

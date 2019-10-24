@@ -8,6 +8,8 @@ import '@/assets/styles/main.scss'
 import axios from 'axios'
 import 'babel-polyfill'
 import "./assets/font114/iconfont.css"
+import "./assets/font_218/iconfont.css"
+import "./assets/font_down/iconfont.css"
 import $ from 'jquery'
 
 Vue.config.productionTip = false
@@ -20,3 +22,7 @@ new Vue({
     template: '<App/>',
     components: { App },
 })
+
+
+
+
