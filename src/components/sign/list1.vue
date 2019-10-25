@@ -190,7 +190,7 @@
         checkStatus(_this)
 
         // /wcfy/rytj/findInfoByOrderStatus
-        axios.post(_this.url + "/wcfy/sys/rytj/rytjList",
+        axios.post(_this.url + "/wcfy/sys/rytj/rytjList?loginId=" + _this.loginId + "&token=" + _this.token,
                 {
                   orderStatus: 1,
                   pageSize: 5,

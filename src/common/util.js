@@ -32,13 +32,13 @@ export function searchData() {
 // 所有数据api的域名地址
 export function familyDoctor() {
     // return 'http://sky.premier-tech.cn'
-    // return "http://chensheng.premier-tech.cn"
-    return "http://39.104.48.112:8088"
+     return "https://zhuoyawcfy.premier-tech.cn:10002"
+    //return "http://192.168.3.4:8083"
 }
 //入园体检的
 export function fyurl() {
     return 'https://zhuoyawcfy.premier-tech.cn:10002'
-    // return "http://192.168.3.4:8083"
+  // return "http://test.premier-tech.cn"
     // return "http://39.104.48.112:8088"
 }
 // 会话过期
