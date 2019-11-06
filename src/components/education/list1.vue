@@ -10,11 +10,12 @@
                     <div>
                         <div class="total">
                             <span>总人数</span>
-                            <span>{{item.totalNum}}</span>
+                            <span v-if="item.studentCount != '' || item.studentCount != null || item.studentCount != 'null'">{{item.studentCount}}</span>
+                            <span v-else>0</span>
                         </div>
                         <div class="bj">
                             <span>班级数</span>
-                            <span>{{item.classNum}}</span>
+                            <span>{{item.classCount}}</span>
                         </div>
                     </div>
                 </li>
@@ -25,6 +26,7 @@
 
 <script>
     import axios from "axios"
+    import {familyDoctor, getLastDate2, checobox, checkStatus} from "./../../common/util.js";
     export default {
         provide () {
             return {
@@ -35,9 +37,14 @@
             return {
                 isRouterAlive: true,
                 data_list:" ",
+                url:familyDoctor(),
+                token:"",
+                loginId:""
             }
         },
         created(){
+            this.token = window.localStorage.getItem("token");
+            this.loginId = window.localStorage.getItem("loginId");
             this.requestData()
         },
         methods: {
@@ -50,20 +57,21 @@
             },
             //班级详情
             route(item){
-                window.localStorage.setItem('gradeId',item.id)
-                window.localStorage.setItem('totalNum',item.totalNum)
-                this.$router.push({ name:'早教班级详情',params:{id:item.id}})
+                window.localStorage.setItem('gradeId',item.gradeId)//年级id
+                window.localStorage.setItem('stuNum',item.studentCount) //总人数
+                window.localStorage.setItem('classNum',item.classCount) //总人数
+                this.$router.push({ name:'早教班级详情',params:{id:item.gradeId}})
 
             },
             requestData(){
-                var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/grade/loadGradeList",
+                var _this=this
+                axios.post(this.url+"/wcfy/sys/grade/loadGradeList"+"?loginId="+_this.loginId+"&token="+_this.token,
                     {
                         pageSize:10,
                         pageNum:1
                     }).then(function(response){
                         console.log(response)
-                       that.data_list=response.data.gradeInfoList;
+                       _this.data_list=response.data.list;
 
                     })
             }

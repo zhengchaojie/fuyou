@@ -39,6 +39,8 @@ import education3 from '@/components/education/list3'
 import education4 from '@/components/education/list4'
 import education5 from '@/components/education/list5'
 import education6 from '@/components/education/list6'
+import education7 from '@/components/education/list7'
+import education8 from '@/components/education/list8'
 //懒加载方式，当路由被访问的时候才加载对应组件
 const Login = resolve => require(['@/components/Login'], resolve)
 //图片加载
@@ -103,6 +105,8 @@ let router = new Router({
                 { path: '/eduction/list3/', component: education3, name:'预约管理', menuShow: "1356" },
                 { path: '/eduction/list4/', component: education4, name:'课程核销', menuShow: "1356" },
                 { path: '/eduction/list6/', component: education6, name:'续费管理', menuShow: "1356" },
+                { path: '/eduction/list7/', component: education7, name:'试听列表', menuShow: "1356" },
+                { path: '/eduction/list8/', component: education8, name:'开课记录', menuShow: "1356" },
                 { path: '/eduction/list5/', component: education5, name:'早教班级详情', menuShow: "" },
             ]
         },

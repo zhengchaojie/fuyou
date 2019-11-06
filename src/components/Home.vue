@@ -183,6 +183,7 @@ html {
 .el-pager li.active{
   border-color: #fb8ca6!important;
   background-color: #fb8ca6!important;
+  color: white !important;
 }
 .el-pager li:hover {
   color: black!important;
@@ -190,9 +191,8 @@ html {
 .el-dialog__header{
   width: 85%;
   margin: auto;
-  padding: 25px 0 10px 0!important;
+  padding: 25px 0 30px 0!important;
   border-bottom: 1px solid #ccc;
-
 }
 .el-dialog__title{
   float: left;
@@ -328,7 +328,7 @@ html {
 }
 /*条件查询*/
 
-  .el-dialog--small{
+  .el-dialog{
     height: 330px !important;
     width: 270px !important;
   }

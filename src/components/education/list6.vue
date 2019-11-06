@@ -128,11 +128,12 @@
     import axios from "axios";
     import {getLastDate,familyDoctor} from "./../../common/util.js"
     export default {
-        name: "续费管理",
+        name: "list6",
         data() {
             return {
                 total:100,
                 id: "",
+                url:familyDoctor(),
                 token: "",
                 loginId: "",
                 search: "",
@@ -183,6 +184,8 @@
             };
         },
         created(){
+          this.token = window.localStorage.getItem("token");
+          this.loginId = window.localStorage.getItem("loginId");
           this.requestData()
         },
         methods:{
@@ -197,7 +200,7 @@
                     return
                 }
 
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/renewal/loadRenewalList",
+                axios.post(that.url+"/wcfy/sys/renewal/loadRenewalList"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageSize:10,
                         pageNum:val,
@@ -217,26 +220,27 @@
                     }
                 })
             }else{
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadStudentOrderOrCourseList",
+                axios.post(that.url+"/wcfy/sys/renewal/loadRenewalList"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageNum:val,
                         pageSize:10
                     }).then(function(response){
+                      console.log(response)
                     if(response.data.code==500){
                         that.$message({
                             type:'error',
                             message:response.data.msg
                         })
                     }else{
-                        that.data3=response.data.StudentList
-                        that.total=response.data.total
+                      that.data3=response.data.renewalList
+                      that.total=response.data.total
                     }
                 })
             }
         },
             requestData(){
             var that=this
-            axios.post("http://gwz.premier-tech.cn/wcfy/sys/renewal/loadRenewalList",
+            axios.post(that.url+"/wcfy/sys/renewal/loadRenewalList"+"?loginId="+that.loginId+"&token="+that.token,
                 {
                     pageNum:1,
                     pageSize:10
@@ -255,7 +259,7 @@
             //搜索
             Serach(){
             var that=this
-            axios.post("http://gwz.premier-tech.cn/wcfy/sys/renewal/loadRenewalList",
+            axios.post(that.url+"/wcfy/sys/renewal/loadRenewalList"+"?loginId="+that.loginId+"&token="+that.token,
                 {
                     pageNum:1,
                     pageSize:10,
@@ -275,7 +279,7 @@
             //续费操作
             agree(id){
                 var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/renewal/agreedToRenewal",
+                axios.post(that.url+"/wcfy/sys/renewal/agreedToRenewal"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         renewalId:id
                     }).then(function(response){
@@ -295,7 +299,7 @@
             },
             isagree(id){
                 var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/renewal/rejectedRenewal",
+                axios.post(that.url+"/wcfy/sys/renewal/rejectedRenewal"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         renewalId:id
                     }).then(function(response){
@@ -328,7 +332,7 @@
                     this.dialogVisible = true
                     return
                 }
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/renewal/loadRenewalList",
+                axios.post(that.url+"/wcfy/sys/renewal/loadRenewalList"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageSize:10,
                         pageNum:1,

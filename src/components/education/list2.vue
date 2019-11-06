@@ -11,9 +11,9 @@
                 <div class="search-icon" @click="Serach()">
                     <img src="../../assets/images/search.png" height="30" width="30">
                 </div>
-                <div class="new_add" @click="dialogVisible = true">
-                    新增学生
-                </div>
+                <!--<div class="new_add" @click="dialogVisible = true">-->
+                    <!--新增学生-->
+                <!--</div>-->
             </div>
 
             <div class="content">
@@ -40,7 +40,7 @@
                     <li v-else-if="item.orderStatus==4">待支付</li>
                     <li v-else-if="item.orderStatus==5">服务中</li>
                     <li v-else="item.orderStatus==6">已完成</li>
-                    <li @click="detail=true;detailInfo(item.id)">详情</li>
+                    <li @click="detail=true;detailInfo(item)">详情</li>
                 </ul>
             </div>
             <div class="all">
@@ -133,27 +133,27 @@
                     >
                         <div class="xf_content">
                             <div>
-                                <p>状态</p>
-                                <el-select v-model="selectvalue_status" placeholder="请选择">
-                                    <el-option
-                                            v-for="item in options"
-                                            :key="item.value"
-                                            :label="item.label"
-                                            :value="item.value">
-                                    </el-option>
-                                </el-select>
-                            </div>
-                            <div>
                                 <p>课程</p>
-                                <el-select v-model="selectvalue_kc" placeholder="请选择">
+                                <el-select v-model="selectvalue_kc"  @change="req_nianlin"  placeholder="请选择">
                                     <el-option
                                             v-for="item in options_kc"
-                                            :key="item.value"
-                                            :label="item.label"
-                                            :value="item.value">
+
+                                            :label="item.gradeName"
+                                            :value="item.gradeId">
                                     </el-option>
                                 </el-select>
                             </div>
+                          <div>
+                            <p>儿童月龄</p>
+                            <el-select v-model="selectvalue_status" placeholder="请选择">
+                              <el-option
+                                v-for="item in options"
+
+                                :label="item"
+                                :value="item">
+                              </el-option>
+                            </el-select>
+                          </div>
                         </div>
                         <span slot="footer" class="dialog-footer">
                     <el-button @click="dialogVisibles = false">取 消</el-button>
@@ -171,15 +171,29 @@
                     <div class="zj_details">
                         <ul>
 
-                            <li class="used" v-for="(item,index) in courseInfoList" v-if="item.courseStatus==2">
+                            <li class="used" v-for="(item,index) in courseInfoList" v-if="item.courseStatus==2" >
                                 <div>
                                     <div>已使用</div>
                                     <div>{{item.afterDate}}</div>
                                 </div>
                             </li>
-                            <li class="wait_use" v-else-if="item.courseStatus==1">
+                          <li class="used" v-for="(item,index) in courseInfoList" v-if="item.courseStatus==4" >
+                            <div>
+                              <div>缺课</div>
+                              <div>{{item.afterDate}}</div>
+                            </div>
+                          </li>
+                            <li class="wait_use" v-else-if="item.courseStatus==1 ">
                                 <div>待使用</div>
+                                <span class="qingjia" @click="qingjia(item)">请假</span>
+                                <span class="queke" @click="queke(item)">缺课</span>
                             </li>
+                          <li class="wait_use" v-else-if="item.courseStatus==3">
+                            <div>请假</div>
+                          </li>
+                          <!--<li class="wait_use" v-else-if="item.courseStatus==4">-->
+                            <!--<div>缺课</div>-->
+                          <!--</li>-->
                         </ul>
                     </div>
                     <span slot="footer" class="dialog-footer">
@@ -197,7 +211,7 @@
     import axios from "axios"
     import {getLastDate,familyDoctor} from "./../../common/util.js"
     export default {
-        name: "学生管理",
+        name: "list2",
         data() {
             return {
                 url:familyDoctor(),
@@ -218,7 +232,8 @@
                     name:"",
                     phone:""
                 },
-                options: [{
+                options: [
+                  {
                     value: '1',
                     label: '已预约'
                 }, {
@@ -239,7 +254,8 @@
                 },],
                 selectvalue_status: '',
                 selectvalue_kc:"",
-                options_kc: [{
+                options_kc: [
+                  {
                     value: '1',
                     label: '早教课A班'
                 }, {
@@ -260,40 +276,30 @@
                 }],
                 options_bj:'',
                 value_bj:"",
+                gradeId:"",
+                xqId:""
             };
         },
         created(){
-            this.requestData()
+          this.token = window.localStorage.getItem("token");
+          this.loginId = window.localStorage.getItem("loginId");
+          this.requestData();
+          this.req_banji();
+
         },
         watch:{
-            selectvalue_kc(){
-                let that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/class/loadClassList",
-                    {
-                        gradeId:this.selectvalue_kc
-                    }).then(function(response){
-                    if(response.data.code==500){
-                        that.$message({
-                            type:'error',
-                            message:response.data.msg
-                        })
-                    }else{
-                        that.options_bj=response.data.classList
-                        console.log(that.options_bj)
-                    }
-                })
 
-            }
         },
         methods:{
             handleCurrentChange(val){
                 var that=this
                 if(that.selectvalue_status!=''||that.selectvalue_kc!=''){
-                    axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadStudentOrderList",
+                  let yuelin = (that.selectvalue_status).substr(0,5)
+                    axios.post(that.url+"/wcfy/sys/order/studentMan"+"?loginId="+that.loginId+"&token="+that.token,
                         {
                             pageNum:val,
                             pageSize:10,
-                            orderStats:that.selectvalue_status,
+                            monthAge:yuelin,
                             gradeId:that.selectvalue_kc
                         }).then(function(response){
                         if(response.data.code==500){
@@ -302,53 +308,56 @@
                                 message:response.data.msg
                             })
                         }else{
-                            that.data_list=response.data.StudentList
-                            that.total=response.data.total
+                          that.data_list=response.data.page.records
+                          that.total=response.data.page.total
                         }
                     })
                 }else{
 
-                    axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadStudentOrderList",
+                    axios.post(that.url+"/wcfy/sys/order/studentMan"+"?loginId="+that.loginId+"&token="+that.token,
                         {
                             pageNum:val,
                             pageSize:10
                         }).then(function(response){
+                          console.log(response)
                         if(response.data.code==500){
                             that.$message({
                                 type:'error',
                                 message:response.data.msg
                             })
                         }else{
-                            that.data_list=response.data.StudentList
-                            that.total=response.data.total
+                          that.data_list=response.data.page.records
+                          that.total=response.data.page.total
                         }
                     })
                 }
             },
             requestData(){
                 var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadStudentOrderList",
+                axios.post(that.url+"/wcfy/sys/order/studentMan"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageNum:1,
                         pageSize:10
                     }).then(function(response){
+                      console.log(response)
                     if(response.data.code==500){
                         that.$message({
                             type:'error',
                             message:response.data.msg
                         })
                     }else{
-                        that.data_list=response.data.StudentList
-                        that.total=response.data.total
+                        that.data_list=response.data.page.records
+                        that.total=response.data.page.total
                     }
                 })
             },
             //详情
-            detailInfo(id){
-                var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/selectCourceInfo",
+            detailInfo(obj){
+                this.xqId = obj.id;
+                var that=this;
+                axios.post(that.url+"/wcfy/sys/order/selectCourceInfo"+"?loginId="+that.loginId+"&token="+that.token,
                     {
-                        orderId:id
+                        orderId:this.xqId
                     }).then(function(response){
                     if(response.data.code==500){
                         that.$message({
@@ -361,14 +370,31 @@
                     }
                 })
             },
+           detailInfo1(id){
+            var that=this;
+            axios.post(that.url+"/wcfy/sys/order/selectCourceInfo"+"?loginId="+that.loginId+"&token="+that.token,
+              {
+                orderId:id
+              }).then(function(response){
+              if(response.data.code==500){
+                that.$message({
+                  type:'error',
+                  message:response.data.msg
+                })
+              }else{
+                console.log(response)
+                that.courseInfoList=response.data.courseInfoList
+              }
+            })
+          },
             //搜索
             Serach(){
                 var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadStudentOrderList",
+                axios.post(that.url+"/wcfy/sys/order/studentMan"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageNum:1,
                         pageSize:10,
-                        babyAndPhone:that.search,
+                        searchKey:that.search,
                     }).then(function(response){
                     if(response.data.code==500){
                         that.$message({
@@ -376,8 +402,8 @@
                             message:response.data.msg
                         })
                     }else{
-                        that.data_list=response.data.StudentList
-                        that.total=response.data.total
+                      that.data_list=response.data.page.records
+                      that.total=response.data.page.total
                     }
                 })
             },
@@ -398,7 +424,7 @@
                     })
                       return false;
                 }
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/saveNewStudent",
+                axios.post(that.url+"/wcfy/sys/order/saveNewStudent"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         babyName:that.add_info.bagename,
                         babyBirthday:getLastDate(that.value1),
@@ -420,11 +446,15 @@
             },
             select_search(){
                 var that=this
-                    axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadStudentOrderList",
+              let monthAge ;
+              if(that.selectvalue_status != ""){
+                monthAge = (that.selectvalue_status).substr(0,5);
+              }
+                    axios.post(that.url+"/wcfy/sys/order/studentMan"+"?loginId="+that.loginId+"&token="+that.token,
                         {
                             pageNum:1,
                             pageSize:10,
-                            orderStats:that.selectvalue_status,
+                            monthAge:monthAge,
                             gradeId:that.selectvalue_kc
                         }).then(function(response){
                         if(response.data.code==500){
@@ -433,11 +463,112 @@
                                 message:response.data.msg
                             })
                         }else{
-                            that.data_list=response.data.StudentList
-                            that.total=response.data.total
+                            that.data_list=response.data.page.records
+                            that.total=response.data.page.total
                         }
                     })
             },
+            //请求查询条件
+            req_banji(){
+              let that = this;
+              axios.post(that.url+"/wcfy/sys/grade/loadGradeList"+"?loginId="+that.loginId+"&token="+that.token,
+                {
+                  pageNum:1,
+                  pageSize:10
+                }).then(function(response){
+                console.log(response)
+                if(response.data.code==500){
+                  that.$message({
+                    type:'error',
+                    message:response.data.msg
+                  })
+                }else{
+                  that.options_kc = response.data.list;
+                  // that.total=response.data.page.total;
+                }
+              })
+            },
+            req_nianlin(){
+              let that = this;
+              that.selectvalue_status = "";
+              axios.post(that.url+"/wcfy/sys/class/loadBabyMonthAge"+"?loginId="+that.loginId+"&token="+that.token,
+                {
+                  gradeId:that.selectvalue_kc
+                }).then(function(response){
+                console.log(response)
+                if(response.data.code==500){
+                  that.$message({
+                    type:'error',
+                    message:response.data.msg
+                  })
+                }else{
+                  that.options =response.data.monthAgeList;
+                  // that.total=response.data.page.total;
+                }
+              })
+            },
+           //请假
+           qingjia(obj){
+             console.log(obj)
+             let id = obj.id;
+             this.$confirm('确定此次课程请假, 是否继续?', '提示', {
+               confirmButtonText: '确定',
+               cancelButtonText: '取消',
+               type: 'warning'
+             }).then(() => {
+               var that=this;
+               axios.post(that.url+"/wcfy/sys/class/updateCourseStatus"+"?loginId="+that.loginId+"&token="+that.token,
+                 {
+                   courseId:id,
+                   courseStatus:"3",
+                 }).then(function(response){
+                 if(response.data.code==500){
+                   that.$message({
+                     type:'error',
+                     message:response.data.msg
+                   })
+                 }else{
+                   that.$message({
+                     type:'success',
+                     message:response.data.msg
+                   })
+                   that.bac0 = false;
+                   console.log(that.xqId)
+                   that.detailInfo1(that.xqId);
+                 }
+               })
+             })
+           },
+          //缺课
+          queke(obj){
+            let id = obj.id;
+            this.$confirm('确定此次课程缺课, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              var that=this;
+              axios.post(that.url+"/wcfy/sys/class/updateCourseStatus"+"?loginId="+that.loginId+"&token="+that.token,
+                {
+                  courseId:id,
+                  courseStatus:"4",
+                }).then(function(response){
+                if(response.data.code==500){
+                  that.$message({
+                    type:'error',
+                    message:response.data.msg
+                  })
+                }else{
+                  that.$message({
+                    type:'success',
+                    message:response.data.msg
+                  })
+                  that.bac0 = false;
+                  that.detailInfo1(that.xqId);
+                }
+              })
+            })
+          }
         }
     }
 </script>
@@ -560,7 +691,7 @@
     height: 110px;
     margin-bottom: 20px;
     float: left;
-    margin-right: 20px;
+    margin-right: 15px;
 }
 .zj_details ul li:nth-of-type(5),.zj_details ul li:nth-of-type(10){
     margin-right: 0;
@@ -592,6 +723,36 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+    }
+.wait_use:hover span{
+    display: inline-block;
+}
+    .qingjia{
+      position: absolute;
+      left: 5px;
+      display: inline-block;
+      width: 50px;
+      border: 1px solid #fb8ca6;
+      text-align: center;
+      top: 10px;
+      color: #fb8ca6;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+    }
+    .queke{
+      position: absolute;
+      right: 5px;
+      display: inline-block;
+      width: 50px;
+      border: 1px solid #fb8ca6;
+      text-align: center;
+      top: 10px;
+      color: #fb8ca6;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
     }
     .wait_use div{
         color:#fb8ca6 ;
@@ -646,5 +807,22 @@
     }
     .xf_content p{
         margin-bottom: 3px;
+    }
+    .search-Input input{
+      position: absolute;
+      top: 50%;
+      right: 70px;
+      margin-top: -25px;
+      float: left;
+    }
+    .search-icon{
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      margin-top: -25px;
+      background-color: #fb8ca6;
+      border-radius: 0px 5px 5px 0px;
     }
 </style>

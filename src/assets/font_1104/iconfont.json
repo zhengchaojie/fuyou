@@ -1,0 +1,16 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "9463136",
+      "name": "方向_箭头06_",
+      "font_class": "fangxiang_jiantou_",
+      "unicode": "e82b",
+      "unicode_decimal": 59435
+    }
+  ]
+}

@@ -17,8 +17,10 @@
                 <li>监护人</li>
                 <li>手机号码</li>
                 <li>预约课程</li>
+                <li>班级月龄</li>
                 <li>排队名次</li>
                 <li>状态</li>
+                <li>操作</li>
             </ul>
             <ul class="listhead font_color" v-for="(item,index) in data3">
                 <li>{{item.babyName}}</li>
@@ -26,13 +28,18 @@
                 <li>{{item.guardianName}}</li>
                 <li>{{item.guardianPhone}}</li>
                 <li>{{item.gradeName}}</li>
+                <li>{{item.monthAge}}</li>
                 <li>{{item.queuedNum}}</li>
-                <li v-if="item.orderStatus==1">已预约</li>
-                <li v-else-if="item.orderStatus==2">排队中</li>
-                <li v-else-if="item.orderStatus==3">已取消</li>
-                <li v-else-if="item.orderStatus==4">待支付</li>
-                <li v-else-if="item.orderStatus==5">服务中</li>
-                <li v-else="item.orderStatus==6">已完成</li>
+                <li>排队中</li>
+                <!--<li v-if="item.orderStatus==1">已预约</li>-->
+                <!--<li v-else-if="item.orderStatus==2">排队中</li>-->
+                <!--<li v-else-if="item.orderStatus==3">已取消</li>-->
+                <!--<li v-else-if="item.orderStatus==4">待支付</li>-->
+                <!--<li v-else-if="item.orderStatus==5">服务中</li>-->
+                <!--<li v-else="item.orderStatus==6">已完成</li>-->
+                <li>
+                  <span @click="zhuan(item)" style="color: #63a35c;cursor: pointer;">邀请试听</span>
+                </li>
             </ul>
         </div>
 
@@ -52,8 +59,27 @@
                 </div>
             </template>
         </div>
+        <!--邀请试听-->
+      <div class="bac" v-show="bac0" >
+        <div class="con" >
+          <span class="tit">变更班级</span>
+          <div class="con1">
+            <div v-for="(item,index) in data5">
+              <div>
+                <span class="tits">{{item.gradeName}}</span>
+                <div class="classroom">
+                  <span   :class="inx == (items.id) ? 'classname1':'classname'"    v-for="(items,index) in item.etzjClassList" @click="tongyi(items,index)"  >{{items.className}}</span>
+                </div>
+              </div>
+            </div>
 
-
+          </div>
+          <span  class="foot">
+             <el-button @click="bac0 = false">取 消</el-button>
+             <el-button type="primary" @click="yaoqing">确 定</el-button>
+            </span>
+        </div>
+      </div>
         <!--条件搜索-->
         <div class="xf_search">
             <el-dialog
@@ -63,27 +89,27 @@
                     >
                 <div class="xf_content">
                     <div>
-                        <p>状态</p>
-                        <el-select v-model="selectvalue_status" placeholder="请选择">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </div>
-                    <div>
                         <p>课程</p>
-                        <el-select v-model="selectvalue_kc" placeholder="请选择">
+                        <el-select   @change="req_nianlin" v-model="selectvalue_kc" placeholder="请选择">
                             <el-option
-                                    v-for="item in options_kc"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
+                              v-for="item in options_kc"
+                              :key="item.gradeName"
+                              :label="item.gradeName"
+                              :value="item.gradeId">
                             </el-option>
                         </el-select>
                     </div>
+                  <div>
+                    <p>宝宝月龄</p>
+                    <el-select v-model="selectvalue_status" placeholder="请选择">
+                      <el-option
+                        v-for="item in options"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                      </el-option>
+                    </el-select>
+                  </div>
                 </div>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="dialogVisible = false">取 消</el-button>
@@ -96,11 +122,13 @@
 
 <script>
     import axios from "axios"
+    import {getLastDate,familyDoctor} from "./../../common/util.js"
     export default {
         name: "lits3",
         data() {
             return {
                 total: 0,
+                url:familyDoctor(),
                 id: "",
                 token: "",
                 loginId: "",
@@ -109,28 +137,11 @@
                 endDate: "",
                 data3: [],
                 dialogVisible: false,
-                options: [{
-                    value: '1',
-                    label: '已预约'
-                }, {
-                    value: '2',
-                    label: '排队中'
-                }, {
-                    value: '3',
-                    label: '已取消'
-                }, {
-                    value: '4',
-                    label: '待支付'
-                }, {
-                    value: '5',
-                    label: '服务中'
-                },{
-                    value: '6',
-                    label: '已完成'
-                }],
+                options: [],
                 selectvalue_status: '',
                 selectvalue_kc:"",
-                options_kc: [{
+                options_kc: [
+                  {
                     value: '1',
                     label: '早教课A班'
                 }, {
@@ -149,20 +160,32 @@
                     value: '6',
                     label: '早教课蒙氏班'
                 }],
+                bac0:"",
+                data5:"",
+                ddId:"",
+                njId:"",
+                bjId:"",
+                inx:0,
+                isActive:-1
             };
         },
         created(){
-            this.requestData()
+          this.token = window.localStorage.getItem("token");
+          this.loginId = window.localStorage.getItem("loginId");
+          this.req_banji();
+          this.requestData();
         },
         methods:{
             handleCurrentChange(val){
                 var that=this
                 if(that.selectvalue_status!=''||that.selectvalue_kc!=''){
-                    axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadStudentOrderList",
+                  let monthAge = (that.selectvalue_status).substr(0,5);
+                    axios.post(that.url+"/wcfy/sys/order/loadAppointmentList"+"?loginId="+that.loginId+"&token="+that.token,
                         {
                             pageNum:val,
                             pageSize:10,
-                            orderStats:that.selectvalue_status,
+                            orderStatus:"1",
+                            monthAge:monthAge,
                             gradeId:that.selectvalue_kc
                         }).then(function(response){
                         if(response.data.code==500){
@@ -176,10 +199,11 @@
                         }
                     })
                 }else{
-                    axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadAppointmentList",
+                    axios.post(that.url+"/wcfy/sys/order/loadAppointmentList"+"?loginId="+that.loginId+"&token="+that.token,
                         {
                             pageNum:val,
-                            pageSize:10
+                            pageSize:10,
+                            orderStatus:"1"
                         }).then(function(response){
                         if(response.data.code==500){
                             that.$message({
@@ -196,11 +220,13 @@
             },
             requestData(){
                 var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadAppointmentList",
+                axios.post(that.url+"/wcfy/sys/order/loadAppointmentList"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageNum:1,
-                        pageSize:10
+                        pageSize:10,
+                        orderStatus:"1"
                     }).then(function(response){
+                      console.log(response)
                     if(response.data.code==500){
                         that.$message({
                             type:'error',
@@ -215,11 +241,12 @@
             //搜索
             Serach(){
                 var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadAppointmentList",
+                axios.post(that.url+"/wcfy/sys/order/loadAppointmentList"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageNum:1,
                         pageSize:10,
-                        babyAndPhone:that.search,
+                        searchKey:that.search,
+                        orderStatus:"1"
                     }).then(function(response){
                     if(response.data.code==500){
                         that.$message({
@@ -234,12 +261,18 @@
             },
             select_search(){
                 var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadAppointmentList",
+              let monthAge ;
+              if(that.selectvalue_status != ""){
+                monthAge = (that.selectvalue_status).substr(0,5);
+              }
+
+                axios.post(that.url+"/wcfy/sys/order/loadAppointmentList"+"?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageNum:1,
                         pageSize:10,
-                        orderStats:that.selectvalue_status,
-                        gradeId:that.selectvalue_kc
+                        orderStatus:"1",
+                        gradeId:that.selectvalue_kc,
+                        monthAge:monthAge
                     }).then(function(response){
                     if(response.data.code==500){
                         that.$message({
@@ -252,6 +285,107 @@
                     }
                 })
             },
+           //同意
+            tongyi(obj,dev){
+              this.inx = obj.id;
+              console.log(this.inx)
+              this.njId = obj.gradeId;
+              this.bjId = obj.id;
+            },
+          //请求查询条件
+          req_banji(){
+            let that = this;
+            axios.post(that.url+"/wcfy/sys/grade/loadGradeList"+"?loginId="+that.loginId+"&token="+that.token,
+              {
+                pageNum:1,
+                pageSize:10
+              }).then(function(response){
+              console.log(response)
+              if(response.data.code==500){
+                that.$message({
+                  type:'error',
+                  message:response.data.msg
+                })
+              }else{
+                that.options_kc = response.data.list;
+                // that.total=response.data.page.total;
+              }
+            })
+          },
+          req_nianlin(){
+            let that = this;
+            that.selectvalue_status = "";
+            axios.post(that.url+"/wcfy/sys/class/loadBabyMonthAge"+"?loginId="+that.loginId+"&token="+that.token,
+              {
+                gradeId:that.selectvalue_kc
+              }).then(function(response){
+              console.log(response)
+              if(response.data.code==500){
+                that.$message({
+                  type:'error',
+                  message:response.data.msg
+                })
+              }else{
+                that.options =response.data.monthAgeList;
+                // that.total=response.data.page.total;
+              }
+            })
+          },
+          //请求班级
+          zhuan(obj){
+            this.bac0 = true;
+            let that = this;
+            console.log(obj)
+            that.ddId = obj.id;
+            axios.post(that.url+"/wcfy/sys/order/loadGradeClassList"+"?loginId="+that.loginId+"&token="+that.token,
+              {
+              }).then(function(response){
+              that.data5 = response.data.list;
+              console.log(that.data5)
+            })
+          },
+          //邀请
+          yaoqing(){
+            this.$confirm('确定同意此条信息, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              var that=this
+              axios.post(that.url+"/wcfy/sys/order/changeClass"+"?loginId="+that.loginId+"&token="+that.token,
+                {
+                  orderId:that.ddId,
+                  orderStatus:"3",
+                  gradeId:that.njId,
+                  classId:that.bjId
+                }).then(function(response){
+                  console.log(response)
+                if(response.data.code==500){
+                  that.$message({
+                    type:'error',
+                    message:response.data.msg
+                  })
+                }else{
+                  that.$message({
+                    type:'success',
+                    message:response.data.msg
+                  })
+                  that.bac0 = false;
+                  that.input='';
+                  that.inputs='';
+                  that.requestData();
+                }
+              })
+
+            })
+          }
+        },
+        computed:{
+          tongyi1(obj,ind){
+            console.log(obj)
+            console.log(ind)
+            this.isActive=index;
+          }
         }
     }
 </script>
@@ -331,21 +465,24 @@
 }
 
 .listhead li:nth-of-type(1), .listhead li:nth-of-type(2) ,.listhead li:nth-of-type(3),.listhead li:nth-of-type(6){
-    width: 12%;
+    width: 9%;
 }
 
 .listhead li:nth-of-type(4) {
-    width: 20%;
+    width: 13%;
 }
  .listhead li:nth-of-type(5){
-     width: 18.8%;
+     width: 15.8%;
  }
 .listhead li:nth-of-type(7) {
     width: 11.8%
 }
 
 .listhead li:nth-of-type(8) {
-    width: 11%
+    width: 10%
+}
+.listhead li:nth-of-type(9) {
+  width: 11.6%
 }
 .all {
     width: 100%;
@@ -377,5 +514,81 @@
 .xf_content p{
     margin-bottom: 3px;
 }
-
+.bac{
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  overflow: auto;
+  margin: 0;
+  z-index: 20;
+  background-color: rgba(0,0,0,0.4);
+}
+.con{
+  margin:0 auto;
+  width: 375px;
+  background-color: #ffffff;
+  margin-top: 8%;
+  border-radius: 10px;
+  padding: 0 30px;
+}
+.con1{
+  height: 350px;
+  overflow: auto;
+}
+.tit{
+  height: 58px;
+  line-height: 58px;
+  border-bottom: 1px solid #dcdcdc;
+  font-size: 18px;
+  color: #fb8ca6;
+  display: inline-block;
+  width: 100%;
+}
+.tits{
+  font-size: 16px;
+  color: #6a6a6a;
+  margin-bottom: 12px;
+  display: inline-block;
+  margin-left: 25px;
+  margin-top: 12px;
+}
+.foot{
+  display: inline-block;
+  height: 80px;
+  line-height: 80px;
+  width: 100%;
+  text-align: center;
+}
+.classroom{
+  padding: 0 25px;
+}
+.classname{
+  color: #fb8ca6;
+  display: inline-block;
+  width:  95px;
+  font-size: 15px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border: 1px solid #fb8ca6;
+  margin-right: 5px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.classname1{
+  background-color: #fb8ca6;
+  color: #000000;
+  display: inline-block;
+  width:  95px;
+  font-size: 15px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border: 1px solid #fb8ca6;
+  margin-right: 5px;
+  margin-top: 5px;
+  cursor: pointer;
+}
 </style>

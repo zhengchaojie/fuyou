@@ -72,33 +72,34 @@
                     <div class="baby_info">
                         <div>
                             <p>姓名</p>
-                            <span>wangxiaoshuai</span>
+                            <span>{{order.babyName}}</span>
                         </div>
                         <div>
                             <p>监护人</p>
-                            <span>wangxiaoshuai</span>
+                            <span>{{order.guardianName}}</span>
                         </div>
                         <div>
                             <p>年龄</p>
-                            <span>12</span>
+                            <span>{{order.babyAge}}月</span>
                         </div>
                         <div>
                             <p>手机号</p>
-                            <span>129127869878</span>
+                            <span>{{order.guardianPhone}}</span>
                         </div>
-                        <div>
-                            <p>班级</p>
-                            <span>A班</span>
-                        </div>
+<!--                        <div>-->
+<!--                            <p>班级</p>-->
+<!--                            <span>A班</span>-->
+<!--                        </div>-->
                     </div>
                     <div>
                         <ul class="lists_data">
-                            <li :class="item.courseStatus==1?'used':'wait_use'" v-for="(item,index) in data_list">
-                                <div v-if="item.courseStatus==1">
-                                    <div>已使用</div>
-                                    <div>{{item.createTime}}</div>
-                                </div>
-                                <div v-else>待使用</div>
+                            <li :class="item.courseStatus==2?'used':'wait_use'" v-for="(item,index) in data_list">
+
+                                <div v-if="item.courseStatus==1">待使用</div>
+                              <div v-else-if="item.courseStatus==2">
+                                <div>已使用</div>
+                                <div>{{item.createTime}}</div>
+                              </div>
                             </li>
 
                         </ul>
@@ -106,7 +107,7 @@
                 </div>
                 <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisibles = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisibles = false">确 定</el-button>
+                <el-button type="primary" @click="dialogVisibles = false;hexiao()">确 定</el-button>
             </span>
             </el-dialog>
         </div>
@@ -130,16 +131,20 @@
                 value1:'',//日期
                 value2:"",
                 url:familyDoctor(),
-                data_list:""
+                data_list:"",
+                order:""
             };
         },
         created(){
+
+            this.token = window.localStorage.getItem("token");
+            this.loginId = window.localStorage.getItem("loginId");
             this.requestData()
         },
         methods:{
             handleCurrentChange(val){
                 var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadCourseList",
+                axios.post(that.url+"/wcfy/sys/order/courseCancelList?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageNum:val,
                         pageSize:10
@@ -150,26 +155,27 @@
                             message:response.data.msg
                         })
                     }else{
-                        that.data3=response.data.StudentList
-                        that.total=response.data.total
+                        that.data3=response.data.page.records
+                        that.total=response.data.page.total
                     }
                 })
             },
             requestData(){
                 var that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadCourseList",
+                axios.post(that.url+"/wcfy/sys/order/courseCancelList?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageNum:1,
                         pageSize:10
                     }).then(function(response){
+                      console.log(response)
                     if(response.data.code==500){
                         that.$message({
                             type:'error',
                             message:response.data.msg
                         })
                     }else{
-                        that.data3=response.data.StudentList
-                        that.total=response.data.total
+                      that.data3=response.data.page.records
+                        that.total=response.data.page.total
                     }
                 })
             },
@@ -183,11 +189,10 @@
                     this.$message("请选择查询条件")
                     return
                 }
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/loadCourseList",
+                axios.post(that.url+"/wcfy/sys/order/courseCancelList?loginId="+that.loginId+"&token="+that.token,
                     {
                         pageNum:1,
                         pageSize:10,
-                        // babyAndPhone:that.search,
                         beginDate:begindate,
                         endDate:enddate,
                     }).then(function(response){
@@ -197,14 +202,14 @@
                             message:response.data.msg
                         })
                     }else{
-                        that.data3=response.data.StudentList
-                        that.total=response.data.total
+                      that.data3=response.data.page.records
+                        that.total=response.data.page.total
                     }
                 })
             },
             submit(){
                 let that=this
-                axios.post("http://gwz.premier-tech.cn/wcfy/sys/order/cancelVerificationCourse",
+                axios.post(that.url+"/wcfy/sys/order/cancelVerificationCourse?loginId="+that.loginId+"&token="+that.token,
                     {
                         courseNo:that.search
                     }).then(function(response){
@@ -214,12 +219,14 @@
                             message:response.data.msg
                         })
                     }else{
-                        that.data_list=response.data.courseList
+                        that.order=response.data.order
+                        that.data_list=response.data.list
                         that.dialogVisibles = true
                     }
                 })
 
-            }
+            },
+
         }
     }
 </script>
