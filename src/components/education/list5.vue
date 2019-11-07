@@ -117,7 +117,7 @@
         <div class="con" >
           <span class="tit">编辑班级</span>
           <span class="tits">班级人数</span>
-          <el-input class="shuru" v-model="bjrs1"></el-input>
+          <el-input class="shuru" v-model="bjrs1" type="number" ></el-input>
           <span class="tits">老师姓名</span>
           <el-input  class="shuru" v-model="lsxm1"></el-input>
           <span class="tits">上课教室</span>

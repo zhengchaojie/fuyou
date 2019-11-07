@@ -202,6 +202,7 @@
               message:response.data.msg
             })
             that.data3=[];
+            that.total=0;
           }else{
             that.data3=response.data.page.records;
             that.total=response.data.page.total;
