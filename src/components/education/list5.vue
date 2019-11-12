@@ -105,7 +105,15 @@
       minTime: startTime
     }">
           </el-time-select>
-
+          <span class="tits">上课日期</span>
+          <p></p>
+          <el-select v-model="week1" placeholder="请选择">
+            <el-option
+              v-for="item in week"
+              :label="item.name"
+              :value="item.name">
+            </el-option>
+          </el-select>
             <span  class="foot">
              <el-button @click="bac = false">取 消</el-button>
              <el-button type="primary" @click="xinzeng()">确 定</el-button>
@@ -145,6 +153,15 @@
       minTime: startTime1
     }">
           </el-time-select>
+          <span class="tits">上课日期</span>
+          <p></p>
+          <el-select v-model="week2" placeholder="请选择">
+            <el-option
+              v-for="item in week"
+              :label="item.name"
+              :value="item.name">
+            </el-option>
+          </el-select>
           <span  class="foot">
              <el-button @click="bac1 = false">取 消</el-button>
              <el-button type="primary" @click="bianji()">确 定</el-button>
@@ -192,7 +209,10 @@
                 njId:"",
                 bjId:"",
                 ddId:"",
-                inx:""
+                inx:"",
+                week1:"",
+                week2:"",
+                week:[{name:"星期一"},{name:"星期二"},{name:"星期三"},{name:"星期四"},{name:"星期五"},{name:"星期六"},{name:"星期天"},]
             }
         },
         created(){
@@ -332,6 +352,13 @@
                 })
                 return false;
               }
+              if(that.week1 == ""){
+                this.$message({
+                  type:"error",
+                  message:"请选择上课日期"
+                })
+                return false;
+              }
               let studyTime = this.startTime + "-" + this.endTime;
               axios.post(that.url+"/wcfy/sys/class/saveNewClass"+"?loginId="+that.loginId+"&token="+that.token,
                 {
@@ -339,7 +366,8 @@
                   classNum:that.bjrs,
                   teacherName:that.lsxm,
                   studyRoom:that.skjs,
-                  studyTime:studyTime
+                  studyTime:studyTime,
+                  studyWeek:that.week1
                 }).then(function(response){
                   console.log(response)
                 if(response.data.code==500){
@@ -373,7 +401,7 @@
               this.classId = obj.classId;
               this.bjrs1 = obj.reservedNum;
               let time = obj.studyTime;
-
+              this.week2 = obj.studyWeek;
               this.startTime1 = time.substr(0,5);
               this.endTime1 = time.substr(6,11)
             },
@@ -414,6 +442,13 @@
                 })
                 return false;
               }
+              if(that.week2 == ""){
+                this.$message({
+                  type:"error",
+                  message:"请选择上课日期"
+                })
+                return false;
+              }
                 let studyTime = this.startTime1 + "-" + this.endTime1;
               console.log(that.classId)
               axios.post(that.url+"/wcfy/sys/class/updateEtzjClassInfo"+"?loginId="+that.loginId+"&token="+that.token,
@@ -422,7 +457,8 @@
                   teacherName:that.lsxm1,
                   studyRoom:that.skjs1,
                   studyTime:studyTime,
-                  classId:that.classId
+                  classId:that.classId,
+                  studyWeek:that.week2
                 }).then(function(response){
                   console.log(response)
                 if(response.data.code==500){
@@ -793,9 +829,10 @@
     margin:0 auto;
     width: 375px;
     background-color: #ffffff;
-    margin-top: 8%;
+    margin-top: 5%;
     border-radius: 10px;
     padding: 0 30px;
+    margin-bottom: 30px;
   }
   .con1{
     height: 350px;
@@ -865,5 +902,8 @@
     margin-right: 5px;
     margin-top: 5px;
     cursor: pointer;
+  }
+  .el-select{
+    margin-left: 30px;
   }
 </style>

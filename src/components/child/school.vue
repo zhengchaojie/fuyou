@@ -65,42 +65,22 @@
       </div>
 
       <div class="content">
-        <ul class="test">
+        <div class="overScroll">
+        <ul class="test" >
           <li>项目/人数</li>
-          <li>体检费</li>
-          <li>氟防龋治疗</li>
-          <li>视力检查</li>
-          <li>血红蛋白</li>
-          <li>听力筛查</li>
-          <li>心理行为筛查</li>
-          <li>血铅</li>
-          <li>乙肝五项</li>
-          <li>血型(ABO+RH)</li>
+          <li v-for="(item,index) in data6">{{item.medicalName}}</li>
         </ul>
         <ul class="test font_color" >
           <li>人数</li>
-          <li>{{data6.tjf}}</li>
-          <li>{{data6.ffyzl}}</li>
-          <li>{{data6.slsc}}</li>
-          <li>{{data6.xhdb}}</li>
-          <li>{{data6.tlsc}}</li>
-          <li>{{data6.xlxwsc}}</li>
-          <li>{{data6.xq}}</li>
-          <li>{{data6.ygwx}}</li>
-          <li>{{data6.xx}}</li>
+          <li v-for="(item,index) in data6">{{item.totalAmount}}</li>
+
         </ul>
         <ul class="test font_color" >
           <li>金额(元)</li>
-          <li>{{data7.tjf}}</li>
-          <li>{{data7.ffyzl}}</li>
-          <li>{{data7.slsc}}</li>
-          <li>{{data7.xhdb}}</li>
-          <li>{{data7.tlsc}}</li>
-          <li>{{data7.xlxwsc}}</li>
-          <li>{{data7.xq}}</li>
-          <li>{{data7.ygwx}}</li>
-          <li>{{data7.xx}}</li>
+          <li v-for="(item,index) in data6">{{item.studentCount}}</li>
+
         </ul>
+        </div>
       </div>
 
 
@@ -142,7 +122,8 @@
           {"school": "小天才幼儿园", "banji": "99", "renshu": "524", "state": 1, "riqi": "2019-02-15 12:00"},
           {"school": "小天才幼儿园", "banji": "86", "renshu": "381", "state": 0, "riqi": "2019-02-15 12:00"},
         ],
-        data5: [{
+        data5: [
+          {
           "bianhao": "1",
           "name": "小明",
           "class": "小1班",
@@ -284,8 +265,8 @@
             {
             schoolId:schoolid,
           }).then((response)=>{
-              _this.data6 = response.data.data.count;
-              _this.data7 = response.data.data.je;
+            console.log(response)
+              _this.data6 = response.data.data;
           })
         this.firstschool = false;
         this.secondschool = true;
@@ -561,15 +542,20 @@
     outline: none;
     cursor: pointer;
   }
-
+  .overScroll{
+    overflow-y: hidden;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
   .test {
     width: 100%;
     height: 70px;
     margin-top: 10px;
+    white-space: nowrap;
   }
 
   .test li {
-    float: left;
+    display: inline-block;
     height: 70px;
     line-height: 70px;
     text-align: center;
@@ -577,48 +563,49 @@
     font-size: 14px;
     color: #fb8ca6;
     background-color: #ffffff;
-    margin-right: 0.2%;
+    margin-right: 2px;
+    width: 110px;
   }
 
-  .test li:nth-of-type(1) {
-    width: 10%;
-  }
+  /*.test li:nth-of-type(1) {*/
+    /*width: 10%;*/
+  /*}*/
 
-  .test li:nth-of-type(2) {
-    width: 9%;
-  }
+  /*.test li:nth-of-type(2) {*/
+    /*width: 9%;*/
+  /*}*/
 
-  .test li:nth-of-type(3) {
-    width: 10%;
-  }
+  /*.test li:nth-of-type(3) {*/
+    /*width: 10%;*/
+  /*}*/
 
-  .test li:nth-of-type(4) {
-    width: 9%;
-  }
+  /*.test li:nth-of-type(4) {*/
+    /*width: 9%;*/
+  /*}*/
 
-  .test li:nth-of-type(5) {
-    width: 9%;
-  }
+  /*.test li:nth-of-type(5) {*/
+    /*width: 9%;*/
+  /*}*/
 
-  .test li:nth-of-type(6) {
-    width: 9%;
-  }
+  /*.test li:nth-of-type(6) {*/
+    /*width: 9%;*/
+  /*}*/
 
-  .test li:nth-of-type(7) {
-    width: 12%;
-  }
+  /*.test li:nth-of-type(7) {*/
+    /*width: 12%;*/
+  /*}*/
 
-  .test li:nth-of-type(8) {
-    width: 9%;
-  }
+  /*.test li:nth-of-type(8) {*/
+    /*width: 9%;*/
+  /*}*/
 
-  .test li:nth-of-type(9) {
-    width: 9%;
-  }
+  /*.test li:nth-of-type(9) {*/
+    /*width: 9%;*/
+  /*}*/
 
-  .test li:nth-of-type(10) {
-    width: 12%;
-  }
+  /*.test li:nth-of-type(10) {*/
+    /*width: 12%;*/
+  /*}*/
 
   .zengzhi1 {
     height: 25px;

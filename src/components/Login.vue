@@ -62,26 +62,24 @@ export default {
         _this.$message(msg)
         return
       }
-      let num=response.data.data.roleId;
 
+      let num=response.data.data.roleId;
       let date1 = new Date()
       let dateLogin=date1.getTime()
-       window.sessionStorage.setItem("dateLogin",dateLogin);
+      window.sessionStorage.setItem("dateLogin",dateLogin);
       window.sessionStorage.setItem("token",response.data.data.token);
       window.sessionStorage.setItem("loginId",response.data.data.id);
       window.sessionStorage.setItem("id",response.data.data.roleId);
       window.sessionStorage.setItem("user_name",response.data.data.name);
-      window.localStorage.setItem("token",response.data.data.token);
-      window.localStorage.setItem("loginId",response.data.data.id);
-      window.localStorage.setItem("id",response.data.data.roleId);
-      window.localStorage.setItem("user_name",response.data.data.name);
+        window.localStorage.setItem("token",response.data.data.token);
+        window.localStorage.setItem("loginId",response.data.data.id);
+        window.localStorage.setItem("id",response.data.data.roleId);
+        window.localStorage.setItem("user_name",response.data.data.name);
       //权限为6
       if(num == 6 ){
         window.localStorage.setItem("schoolid",response.data.data.shcoolId);//学校账号
         window.localStorage.setItem("schoolname",response.data.data.account);//学校名称
       }
-
-
       let roleId = response.data.data.roleId;
       _this.b=response.data.roleId
       switch(num){
@@ -98,8 +96,14 @@ export default {
        _this.$router.push("sign/list1/")
        break;
        case 6:
-         _this.$router.push("child/classes/")
-              break;
+        _this.$router.push("child/classes/")
+        break;
+        case 7:
+          _this.$router.push("/eduction/list1/")
+       break;
+        case 8:
+          _this.$router.push("child/school")
+       break;
      }
    })
    }

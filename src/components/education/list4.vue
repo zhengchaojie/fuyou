@@ -118,7 +118,7 @@
     import axios from "axios";
     import {getLastDate,familyDoctor} from "./../../common/util.js"
     export default {
-        name: "课程核销",
+
         data() {
             return {
                 total: 0,

@@ -28,7 +28,7 @@
         <li>{{item.guardianPhone}}</li>
         <li>{{item.gradeName}}</li>
         <li>{{item.monthAge}}</li>
-        <li>{{item.auditionDate}}</li>
+        <li @click="showTime(item)">{{item.auditionDate}}</li>
         <li>
           <span class="green" @click="buy(item)">可购买</span>
           <span class="yellow" @click="bohui(item)">驳回</span>
@@ -90,6 +90,29 @@
                 </span>
       </el-dialog>
     </div>
+    <!--修改时间-->
+    <div class="bac" v-show="bac0" >
+        <div class="con">
+          <span class="tit">修改时间段</span>
+        <span class="tits">试听时间</span>
+        <div class="block">
+          <el-date-picker
+            v-model="stsj"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+        </div>
+          <span  class="foot">
+             <el-button @click="bac0 = false">取 消</el-button>
+             <el-button type="primary" @click="changTime">确 定</el-button>
+        </span>
+        </div>
+
+      </div>
+
+
+
   </div>
 </template>
 
@@ -100,6 +123,9 @@
     name: "list7",
     data() {
       return {
+        bac0:false,
+        stsj:"",
+        orderId:"",
         total:0,
         id: "",
         token: "",
@@ -145,6 +171,37 @@
       this.req_banji();
     },
     methods:{
+      //
+      showTime(obj){
+        console.log(obj)
+        this.stsj = obj.auditionDate;
+        this.orderId = obj.id;
+        this.bac0 = true;
+      },
+      //更改时间
+      changTime(){
+        let that=this;
+        axios.post(that.url+"/wcfy/sys/order/updateAuditionDate"+"?loginId="+that.loginId+"&token="+that.token,
+          {
+            auditionDate:that.stsj,
+            orderId:that.orderId
+          }).then(function(response){
+          console.log(response)
+            if(response.data.code == 0){
+              that.$message({
+                type:"success",
+                message:response.data.msg
+              })
+              that.bac0 = false;
+              that.requestData();
+            }else{
+              that.$message({
+                type:"error",
+                message:response.data.msg
+              })
+            }
+        })
+      },
       handleCurrentChange(val){
         var that=this
         if(that.selectvalue_status!=''||that.selectvalue_kc!=''){
@@ -189,7 +246,7 @@
         }
       },
       requestData(){
-        var that=this
+        let that=this
         axios.post(that.url+"/wcfy/sys/order/auditionList"+"?loginId="+that.loginId+"&token="+that.token,
           {
             pageNum:1,
@@ -402,6 +459,53 @@
 </script>
 
 <style scoped>
+  .bac{
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    overflow: auto;
+    margin: 0;
+    z-index: 20;
+    background-color: rgba(0,0,0,0.4);
+  }
+  .con{
+    margin:0 auto;
+    width: 375px;
+    background-color: #ffffff;
+    margin-top: 8%;
+    border-radius: 10px;
+    padding: 0 30px;
+  }
+  .block{
+    padding-left: 24px;
+  }
+  .tit{
+    height: 58px;
+    line-height: 58px;
+    border-bottom: 1px solid #dcdcdc;
+    font-size: 18px;
+    color: #fb8ca6;
+    display: inline-block;
+    width: 100%;
+  }
+  .tits{
+    font-size: 16px;
+    color: #6a6a6a;
+    margin-bottom: 12px;
+    display: inline-block;
+    margin-left: 25px;
+    margin-top: 12px;
+  }
+  .foot{
+    display: inline-block;
+    height: 80px;
+    line-height: 80px;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+  }
   .head_navs{
     height: 70px;
     background-color: #fff;
@@ -497,6 +601,7 @@
   }
   .listhead li:nth-of-type(7){
     width: 15%;
+    cursor: pointer;
   }
   .listhead li:nth-of-type(8){
     width: 15%;

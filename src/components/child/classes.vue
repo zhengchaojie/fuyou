@@ -53,34 +53,17 @@
         </div>
         <!--<el-button  style="background-color: #fb8ca6;color: white;width: 100px;height: 50px;margin-top: 10px;border: 0;margin-left: 10%" @click="xinjian = true">新建班级</el-button>-->
       </div>
-      <ul class="listhead">
-        <li>学生姓名</li>
-        <li>监护人姓名</li>
-        <li>手机号码</li>
-        <li>必查项目</li>
-        <li>心理行为筛查</li>
-        <li>血铅</li>
-        <li>乙肝五项</li>
-        <li>血型(ABO+RH)</li>
+      <div class="overScroll">
+      <ul class="listhead" v-for="(item,index) in data1">
+        <li v-for="(items,indexs) in item">
+          <span v-if="items == 0">暂无</span>
+          <span v-else-if="items != 0">{{items}}</span>
+        </li>
 
       </ul>
-      <ul class="listhead" v-for="(item,index) in data1">
-        <li>{{item.stuName}}</li>
-        <li v-if="item.jhrNam == null" style="color: #bbbbbb;">暂无</li>
-        <li v-else>{{item.jhrNam}}</li>
-        <li v-if="item.phone == null" style="color: #bbbbbb;">暂无</li>
-        <li v-else>{{item.phone}}</li>
-        <li v-if="item.bcxm == 1">已缴</li>
-        <li v-else="item.bcxm == 0" style="color: #bbbbbb;">未缴</li>
-        <li v-if="item.xlxwsc == 1">已缴</li>
-        <li v-else="item.xlxwsc == 0" style="color: #bbbbbb;">未缴</li>
-        <li v-if="item.xq == 1">已缴</li>
-        <li v-else="item.xq == 0" style="color: #bbbbbb;">未缴</li>
-        <li v-if="item.ygwx == 1">已缴</li>
-        <li v-else="item.ygwx == 0" style="color: #bbbbbb;">未缴</li>
-        <li v-if="item.xx == 1">已缴</li>
-        <li v-else="item.xx == 0" style="color: #bbbbbb;">未缴</li>
-      </ul>
+      </div>
+
+    </div>
       <!-- 分页 -->
       <div class="all" >
         <span>共&nbsp;<i>{{total}}</i>&nbsp;条</span>
@@ -97,8 +80,6 @@
           </div>
         </template>
       </div>
-    </div>
-
 
 
 
@@ -168,6 +149,7 @@
           //this.$router.go(0);刷新整页
           //this.requestData();
         },
+
           //请求数据
           requestData(){
              //获取学校的账号名称
@@ -386,13 +368,19 @@
     background-color: #fb8ca6;
     border-radius: 0px 5px 5px 0px;
   }
+  .overScroll{
+    overflow-y: hidden;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
   .listhead{
     width: 100%;
     height: 70px;
     margin-top: 10px;
+    white-space: nowrap;
   }
   .listhead li{
-    float: left;
+    display: inline-block;
     height: 70px;
     line-height: 70px;
     text-align: center;
@@ -400,42 +388,44 @@
     font-size: 14px;
     color: #fb8ca6;
     background-color: #ffffff;
-    margin-right:0.2%;
+    margin-right:2px;
+    width: 110px;
   }
   .font_color li{
     color: #5f5f5f;
+
   }
-  .listhead li:nth-of-type(1){
-    width: 11%;
-  }
-  .listhead li:nth-of-type(2){
-    width: 12%;
-  }
-  .listhead li:nth-of-type(3){
-    width: 13%;
-  }
-  .listhead li:nth-of-type(4){
-    width: 11%;
-  }
-  .listhead li:nth-of-type(5){
-    width: 15%;
-  }
+  /*.listhead li:nth-of-type(1){*/
+    /*width: 11%;*/
+  /*}*/
+  /*.listhead li:nth-of-type(2){*/
+    /*width: 12%;*/
+  /*}*/
+  /*.listhead li:nth-of-type(3){*/
+    /*width: 13%;*/
+  /*}*/
+  /*.listhead li:nth-of-type(4){*/
+    /*width: 11%;*/
+  /*}*/
+  /*.listhead li:nth-of-type(5){*/
+    /*width: 15%;*/
+  /*}*/
+  /*!*.listhead li:nth-of-type(6){*!*/
+  /*!*width: 15%;*!*/
+
+  /*!*}*!*/
   /*.listhead li:nth-of-type(6){*/
-  /*width: 15%;*/
+    /*width: 11%;*/
 
   /*}*/
-  .listhead li:nth-of-type(6){
-    width: 11%;
+  /*.listhead li:nth-of-type(7){*/
+    /*width: 11%;*/
 
-  }
-  .listhead li:nth-of-type(7){
-    width: 11%;
+  /*}*/
+  /*.listhead li:nth-of-type(8){*/
+    /*width: 14%;*/
 
-  }
-  .listhead li:nth-of-type(8){
-    width: 14%;
-
-  }
+  /*}*/
   .Sure,.Return{
     width: 50%;
     float: left;
@@ -501,4 +491,5 @@
   .el-button--primary{
     float: left
   }
+
 </style>

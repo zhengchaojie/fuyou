@@ -31,8 +31,8 @@ export function searchData() {
 }
 // 所有数据api的域名地址
 export function familyDoctor() {
-    // return 'http://test.premier-tech.cn'
-     return "https://zhuoyawcfy.premier-tech.cn:10002"
+     return 'http://test.premier-tech.cn'
+    // return "https://zhuoyawcfy.premier-tech.cn:10002"
     //return "http://192.168.3.4:8083"
 }
 //入园体检的

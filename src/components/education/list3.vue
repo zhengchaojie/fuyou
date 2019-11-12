@@ -52,8 +52,8 @@
                     <el-pagination
                             layout="prev, pager, next"
                             :total="total"
-                            :page-size="5"
-                            v-if="total <= 5 ? false:true"
+                            :page-size="10"
+                            v-if="total <= 10 ? false:true"
                             @current-change="handleCurrentChange">
                     </el-pagination>
                 </div>
@@ -74,11 +74,22 @@
             </div>
 
           </div>
+          <span class="tits">试听时间</span>
+          <div class="block">
+            <el-date-picker
+              v-model="stsj"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+            </el-date-picker>
+          </div>
           <span  class="foot">
              <el-button @click="bac0 = false">取 消</el-button>
              <el-button type="primary" @click="yaoqing">确 定</el-button>
             </span>
         </div>
+
+
       </div>
         <!--条件搜索-->
         <div class="xf_search">
@@ -166,7 +177,8 @@
                 njId:"",
                 bjId:"",
                 inx:0,
-                isActive:-1
+                isActive:-1,
+                stsj:""
             };
         },
         created(){
@@ -205,6 +217,7 @@
                             pageSize:10,
                             orderStatus:"1"
                         }).then(function(response){
+
                         if(response.data.code==500){
                             that.$message({
                                 type:'error',
@@ -285,10 +298,9 @@
                     }
                 })
             },
-           //同意
+           //同意样式以及年纪班级id
             tongyi(obj,dev){
               this.inx = obj.id;
-              console.log(this.inx)
               this.njId = obj.gradeId;
               this.bjId = obj.id;
             },
@@ -346,6 +358,20 @@
           },
           //邀请
           yaoqing(){
+            if(this.stsj == ""){
+               this.$message({
+                 type:"error",
+                 message:"请选择试听时间"
+               })
+              return false
+            }
+            if(!this.bjId){
+              this.$message({
+                type:"error",
+                message:"请选择试听的班级"
+              })
+              return false
+            }
             this.$confirm('确定同意此条信息, 是否继续?', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
@@ -357,7 +383,8 @@
                   orderId:that.ddId,
                   orderStatus:"3",
                   gradeId:that.njId,
-                  classId:that.bjId
+                  classId:that.bjId,
+                  auditionDate:that.stsj
                 }).then(function(response){
                   console.log(response)
                 if(response.data.code==500){
@@ -534,8 +561,14 @@
   padding: 0 30px;
 }
 .con1{
-  height: 350px;
+  height: 250px;
   overflow: auto;
+}
+.el-input{
+  width: 180px;
+  display: block;
+  margin-top: 5px;
+  margin-left: 24px;
 }
 .tit{
   height: 58px;
