@@ -17,7 +17,7 @@
     "html-entities": "^1.2.1",
     "jquery": "^2.2.4",
     "jsbarcode": "^3.11.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.19",
     "mockjs": "^1.0.1-beta3",
     "strip-ansi": "^4.0.0",
     "vue": "^2.4.4",
